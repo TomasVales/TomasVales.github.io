@@ -160,8 +160,7 @@ export const PROJECTS: Project[] = [
       it: ["Planner di studio deterministico e testato che pesa scadenze, difficoltà e il tuo livello di energia giornaliero.", "Schermo diviso: lettore PDF e appunti Markdown con deep link che riportano al punto esatto del PDF.", "SQLite locale con migrazioni Drizzle, IPC sicuro con zod, sincronizzazione con Google Calendar via OAuth con PKCE e 44 test."],
       es: ["Planificador de estudio determinístico y testeado que pondera fechas, dificultad y tu nivel de energía del día.", "Pantalla dividida: visor de PDF y apuntes en Markdown con deep links que vuelven al punto exacto del PDF.", "SQLite local con migraciones de Drizzle, IPC seguro con zod, sincronización con Google Calendar por OAuth con PKCE y 44 tests."],
     },
-    images: ["oasi-icon.png"],
-    icon: true,
+    images: ["oasi1.jpg", "oasi2.jpg", "oasi3.jpg", "oasi4.jpg"],
     repo: gh("Oasi"),
   },
   {
