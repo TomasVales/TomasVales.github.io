@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ARCHIVE, LANGS, LINKS, PATH, STACK, UI, type Lang } from "./content";
+import { ARCHIVE, LANGS, LINKS, PATH, STACK, UI, cvFile, type Lang } from "./content";
 import { Chars, Magnetic, REDUCED, ScrollTrigger, Words, gsap, scrollToId, useLang, useT, VeniceClock } from "./lib";
 
 /* ================= LOADER ================= */
@@ -127,9 +127,16 @@ export function Hero({ ready }: { ready: boolean }) {
         <div className="hero-line mt-6 h-px origin-left bg-ink md:mt-8" />
         <div className="mt-4 flex items-end justify-between gap-6" key={"b" + lang}>
           <p className="hero-fade max-w-[34ch] text-base leading-snug md:text-xl">{t(UI.heroTag)}</p>
-          <button onClick={() => scrollToId("about")} className="hero-fade label flex shrink-0 items-center gap-2">
-            {t(UI.scroll)} <span className="inline-block animate-bounce">↓</span>
-          </button>
+          <div className="flex shrink-0 flex-col items-end gap-4 md:flex-row md:items-center md:gap-8">
+            <Magnetic className="hero-fade">
+              <a href={cvFile(lang)} download className="inline-flex items-center gap-2 rounded-full border border-ink px-4 py-2 text-sm transition-colors hover:bg-ink hover:text-paper">
+                {t(UI.cv)} <span>↓</span>
+              </a>
+            </Magnetic>
+            <button onClick={() => scrollToId("about")} className="hero-fade label hidden items-center gap-2 md:flex">
+              {t(UI.scroll)} <span className="inline-block animate-bounce">↓</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -401,6 +408,11 @@ export function Contact() {
           </button>
         </div>
         <div className="flex flex-col gap-3 md:col-span-5 md:items-end">
+          <Magnetic className="ct-fade">
+            <a href={cvFile(lang)} download className="inline-flex min-w-48 items-center justify-between gap-6 rounded-full bg-paper px-6 py-3 text-lg text-ink">
+              {t(UI.cv)} <span>↓</span>
+            </a>
+          </Magnetic>
           {[["GitHub", LINKS.github], ["LinkedIn", LINKS.linkedin], ["Email", "mailto:" + LINKS.email]].map(([n, u]) => (
             <Magnetic key={n} className="ct-fade">
               <a href={u} target="_blank" rel="noreferrer" className="inline-flex min-w-48 items-center justify-between gap-6 rounded-full border border-paper/30 px-6 py-3 text-lg transition-colors duration-300 hover:bg-paper hover:text-ink">

@@ -2,6 +2,8 @@ export type Lang = "en" | "it" | "es";
 export const LANGS: Lang[] = ["en", "it", "es"];
 type L = Record<Lang, string>;
 
+export const cvFile = (lang: Lang) => (lang === "it" ? "cv/Tomas-Vales-CV-IT.pdf" : "cv/Tomas-Vales-CV-EN.pdf");
+
 export const LINKS = {
   email: "contacto.tomasvales@gmail.com",
   github: "https://github.com/TomasVales",
@@ -57,6 +59,7 @@ export const UI = {
   copied: { en: "Copied!", it: "Copiato!", es: "¡Copiado!" },
   top: { en: "Back to top", it: "Torna su", es: "Volver arriba" },
   built: { en: "Designed & built by Tomas Vales", it: "Progettato e sviluppato da Tomas Vales", es: "Diseñado y hecho por Tomas Vales" },
+  cv: { en: "Download CV", it: "Scarica il CV", es: "Descargar CV" },
   inProgress: { en: "in progress", it: "in corso", es: "en curso" },
 } satisfies Record<string, unknown>;
 
