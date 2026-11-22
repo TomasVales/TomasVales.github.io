@@ -118,6 +118,7 @@ export const PROJECTS: Project[] = [
       es: ["Datos reales de NOAA (índice ONI) y ERA5, procesados por un pipeline en Python que se actualiza solo cada mes con GitHub Actions.", "Unas 2.600 columnas hexagonales animadas mes a mes en cuatro capas: clima, agro, energía y salud urbana.", "Simulador what-if: arrastrás el ONI de La Niña extrema a El Niño extremo y todo el mapa se recalcula en vivo. Años análogos encontrados con k-NN."],
     },
     images: ["pacific1.jpg", "pacific2.jpg"],
+    live: "https://tomasvales.github.io/pacific-pulse/",
     repo: gh("pacific-pulse"),
   },
   {
