@@ -29,7 +29,7 @@ export const UI = {
     es: "Soy Tomas, desarrollador argentino y estudiante de Computer Science en Ca' Foscari, Venecia. Me recibí de Técnico Superior en Programación en la UTN y desde entonces hice backends, herramientas de datos, apps de escritorio y juegos. Ahora busco un lugar donde trabajar, aprender y construir cosas reales.",
   },
   facts: [
-    { n: 47, en: "public repositories", it: "repository pubblici", es: "repositorios públicos" },
+    { n: 49, en: "public repositories", it: "repository pubblici", es: "repositorios públicos" },
     { n: 9, en: "programming languages", it: "linguaggi di programmazione", es: "lenguajes de programación" },
     { n: 6, en: "databases worked with", it: "database usati nei progetti", es: "bases de datos usadas en proyectos" },
   ],
@@ -104,6 +104,26 @@ export type Project = {
 const gh = (r: string) => `https://github.com/TomasVales/${r}`;
 
 export const PROJECTS: Project[] = [
+  {
+    id: "fly-that-reads",
+    title: "The fly that reads",
+    year: "2026",
+    type: { en: "Computational neuroscience", it: "Neuroscienze computazionali", es: "Neurociencia computacional" },
+    stack: ["Python", "PyTorch", "TypeScript", "React", "three.js", "Web Workers"],
+    summary: {
+      en: "The real wiring of a fruit-fly brain, 127,000 neurons mapped by FlyWire, learns to read Shakespeare, Cervantes, Hernández and Dante, and runs live in the browser.",
+      it: "Il cablaggio reale del cervello di un moscerino, 127.000 neuroni mappati da FlyWire, impara a leggere Shakespeare, Cervantes, Hernández e Dante, e gira dal vivo nel browser.",
+      es: "El cableado real del cerebro de una mosca, 127.000 neuronas mapeadas por FlyWire, aprende a leer a Shakespeare, Cervantes, Hernández y Dante, y corre en vivo en el navegador.",
+    },
+    points: {
+      en: ["The full FlyWire connectome (3.7 million connections, 50 million synapses) used as a fixed network; only the Kenyon cells of the memory centre learn, like in a real fly. Trained on the Apple GPU with PyTorch.", "A lab where the brain runs in a Web Worker letter by letter: write a beginning and the fly continues it, switch parts of the brain off, or let it dream. Matches PyTorch to 1e-8.", "Honest results: it learns to babble in each book's language, but a brain with shuffled wiring learns just as much. Silencing 2 neurons (APL) breaks it as much as silencing 40,000."],
+      it: ["Il connettoma completo di FlyWire (3,7 milioni di connessioni, 50 milioni di sinapsi) usato come rete fissa; imparano solo le cellule di Kenyon del centro della memoria, come in un moscerino vero. Addestrato sulla GPU Apple con PyTorch.", "Un laboratorio dove il cervello gira in un Web Worker lettera per lettera: scrivi un inizio e il moscerino continua, spegni parti del cervello o lascialo sognare. Coincide con PyTorch fino a 1e-8.", "Risultati onesti: impara a balbettare nella lingua di ogni libro, ma un cervello con i cavi mescolati impara lo stesso. Spegnere 2 neuroni (APL) lo rompe quanto spegnerne 40.000."],
+      es: ["El conectoma completo de FlyWire (3,7 millones de conexiones, 50 millones de sinapsis) usado como red fija; solo aprenden las células de Kenyon del centro de memoria, como en una mosca real. Entrenado en la GPU de Apple con PyTorch.", "Un laboratorio donde el cerebro corre en un Web Worker letra por letra: escribís un comienzo y la mosca sigue, apagás partes del cerebro o la dejás soñar. Coincide con PyTorch hasta 1e-8.", "Resultados honestos: aprende a balbucear en el idioma de cada libro, pero un cerebro con los cables mezclados aprende lo mismo. Apagar 2 neuronas (APL) la rompe tanto como apagar 40.000."],
+    },
+    images: ["fly-main.jpg", "fly-lab.jpg", "fly-lesions.jpg"],
+    live: "https://tomasvales.github.io/fly-that-reads/",
+    repo: gh("fly-that-reads"),
+  },
   {
     id: "pacific-pulse",
     title: "Pacific Pulse",
