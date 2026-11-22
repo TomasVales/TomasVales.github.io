@@ -5,7 +5,7 @@ type L = Record<Lang, string>;
 export const LINKS = {
   email: "contacto.tomasvales@gmail.com",
   github: "https://github.com/TomasVales",
-  linkedin: "https://www.linkedin.com/in/tomas-vales-5b4735300/",
+  linkedin: "https://www.linkedin.com/in/tomasvales/",
 };
 
 export const UI = {
