@@ -1,6 +1,6 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ARCHIVE, LANGS, LINKS, PATH, STACK, UI, type Lang } from "./content";
-import { Chars, Magnetic, REDUCED, ScrollTrigger, Words, gsap, scrollToId, useLang, useT, useVeniceTime } from "./lib";
+import { Chars, Magnetic, REDUCED, ScrollTrigger, Words, gsap, scrollToId, useLang, useT, VeniceClock } from "./lib";
 
 /* ================= LOADER ================= */
 export function Loader({ onReveal, onDone }: { onReveal: () => void; onDone: () => void }) {
@@ -53,8 +53,20 @@ export function Nav({ onLang }: { onLang: (l: Lang) => void }) {
   const { lang } = useLang();
   const t = useT();
   const links: [string, string][] = [["work", t(UI.nav.work)], ["about", t(UI.nav.about)], ["contact", t(UI.nav.contact)]];
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    // el nav cambia a blanco cuando pasa sobre una sección oscura
+    const active = new Set<Element>();
+    const sts = [...document.querySelectorAll("[data-dark]")].map((el) =>
+      ScrollTrigger.create({
+        trigger: el, start: "top 40px", end: "bottom 40px", refreshPriority: -1,
+        onToggle: (st) => { if (st.isActive) active.add(el); else active.delete(el); ref.current?.classList.toggle("on-dark", active.size > 0); },
+      }),
+    );
+    return () => sts.forEach((st) => st.kill());
+  }, []);
   return (
-    <header className="nav fixed inset-x-0 top-0 z-50 flex items-start justify-between p-4 text-white mix-blend-difference md:px-8 md:py-6">
+    <header ref={ref} className="nav fixed inset-x-0 top-0 z-50 flex items-start justify-between p-4 md:px-8 md:py-6">
       <button onClick={() => scrollToId("top")} className="text-sm font-medium tracking-tight">
         Tomas Vales<sup className="ml-0.5 text-[9px]">©</sup>
       </button>
@@ -80,7 +92,6 @@ export function Hero({ ready }: { ready: boolean }) {
   const root = useRef<HTMLElement>(null);
   const t = useT();
   const { lang } = useLang();
-  const time = useVeniceTime();
 
   useLayoutEffect(() => {
     if (!ready) return;
@@ -103,7 +114,7 @@ export function Hero({ ready }: { ready: boolean }) {
         <div className="mb-6 grid grid-cols-2 gap-4 text-sm md:mb-10 md:grid-cols-4" key={lang}>
           <p className="hero-fade leading-snug">{t(UI.heroRole)}<br /><span className="text-mute">{t(UI.heroAt)}</span></p>
           <p className="hero-fade hidden leading-snug md:block">UTN · Ca' Foscari<br /><span className="text-mute">AR → IT</span></p>
-          <p className="hero-fade hidden leading-snug md:block">{t(UI.local)}<br /><span className="font-mono text-mute tabular-nums">{time}</span></p>
+          <p className="hero-fade hidden leading-snug md:block">{t(UI.local)}<br /><VeniceClock className="font-mono text-mute tabular-nums" /></p>
           <p className="hero-fade flex items-start justify-end gap-2 text-right leading-snug">
             <span className="pulse-dot mt-1.5 inline-block h-2 w-2 shrink-0 rounded-full bg-ink" />
             {t(UI.available)}
@@ -133,15 +144,15 @@ export function Marquee() {
     if (REDUCED) return;
     const ctx = gsap.context(() => {
       const tw = gsap.to(".mq-track", { xPercent: -50, duration: 40, ease: "none", repeat: -1 });
-      let dir = 1;
+      const speed = { v: 1 };
+      const speedTo = gsap.quickTo(speed, "v", { duration: 0.5, ease: "power2", onUpdate: () => { tw.timeScale(speed.v); } });
       ScrollTrigger.create({
         trigger: root.current, start: "top bottom", end: "bottom top",
-        onUpdate: (s) => {
-          if (s.direction !== dir) dir = s.direction;
-          const v = gsap.utils.clamp(-6, 6, s.getVelocity() / 300);
-          gsap.to(tw, { timeScale: dir * (1 + Math.abs(v)), duration: 0.4, overwrite: true });
-          gsap.to(".mq-track", { skewX: -v * 1.2, duration: 0.4, overwrite: "auto" });
+        onUpdate: (st) => {
+          const v = gsap.utils.clamp(0, 5, Math.abs(st.getVelocity()) / 400);
+          speedTo(st.direction * (1 + v));
         },
+        onToggle: (st) => { if (st.isActive) tw.play(); else tw.pause(); },
       });
     }, root);
     return () => ctx.revert();
@@ -226,7 +237,7 @@ export function Toolbox() {
     return () => ctx.revert();
   }, [lang]);
   return (
-    <section ref={root} className="relative overflow-hidden bg-ink text-paper md:h-screen">
+    <section ref={root} data-dark className="relative overflow-hidden bg-ink text-paper md:h-screen">
       <div className="tb-track flex flex-col md:h-full md:w-max md:flex-row md:items-stretch">
         <div className="flex flex-col justify-between p-4 pb-12 pt-24 md:w-[44vw] md:p-8 md:pt-28">
           <p className="label text-mute">({t(UI.toolboxSub)})</p>
@@ -349,14 +360,13 @@ export function Contact() {
   const root = useRef<HTMLElement>(null);
   const t = useT();
   const { lang } = useLang();
-  const time = useVeniceTime();
   const [copied, setCopied] = useState(false);
   const big = t(UI.contactBig);
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(root.current, { borderTopLeftRadius: "45vw", borderTopRightRadius: "45vw" }, {
-        borderTopLeftRadius: "0vw", borderTopRightRadius: "0vw", ease: "none",
-        scrollTrigger: { trigger: root.current, start: "top bottom", end: "top 20%", scrub: true },
+      gsap.fromTo(".ct-cap", { scaleY: 1 }, {
+        scaleY: 0, ease: "none",
+        scrollTrigger: { trigger: root.current, start: "top bottom", end: "top 25%", scrub: true },
       });
       gsap.from(".ct-big [data-char]", { yPercent: 115, stagger: 0.025, duration: 1.3, ease: "expo.out", scrollTrigger: { trigger: ".ct-big", start: "top 80%" } });
       gsap.from(".ct-fade", { y: 30, opacity: 0, stagger: 0.08, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: ".ct-big", start: "top 70%" } });
@@ -372,7 +382,9 @@ export function Contact() {
     setCopied(true); setTimeout(() => setCopied(false), 1800);
   };
   return (
-    <section ref={root} id="contact" className="relative overflow-hidden bg-ink px-4 pt-32 text-paper md:px-8 md:pt-48">
+    <section ref={root} id="contact" data-dark className="relative bg-ink px-4 pt-32 text-paper md:px-8 md:pt-48">
+      {/* curva de entrada: sólo transform (barato) */}
+      <div className="ct-cap pointer-events-none absolute inset-x-0 bottom-[calc(100%-2px)] h-[18vw] origin-bottom rounded-t-[50%] bg-ink" aria-hidden />
       <p className="ct-fade label text-mute">({t(UI.nav.contact)})</p>
       <h2 className="ct-big mt-8 text-[15vw] font-medium leading-[0.85] tracking-[-0.06em] md:text-[11vw]">
         <div><Chars text={big[0]} /></div>
@@ -398,10 +410,10 @@ export function Contact() {
           ))}
         </div>
       </div>
-      <footer className="mt-28 md:mt-40">
+      <footer className="mt-28 overflow-hidden md:mt-40">
         <div className="label flex flex-wrap items-center justify-between gap-4 border-t border-paper/15 pt-5 text-mute">
           <span>{t(UI.built)} · ©2026</span>
-          <span className="tabular-nums">{t(UI.local)} {time}</span>
+          <span className="tabular-nums">{t(UI.local)} <VeniceClock /></span>
           <button onClick={() => scrollToId("top")} className="ulink text-paper">{t(UI.top)} ↑</button>
         </div>
         <div className="ft-name select-none whitespace-nowrap pb-[1vw] pt-8 text-center text-[17.4vw] font-medium leading-[0.8] tracking-[-0.07em]" aria-hidden>

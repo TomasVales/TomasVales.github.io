@@ -116,40 +116,53 @@ export function useVeniceTime() {
   return t;
 }
 
-/* ---------- cursor ---------- */
+/* ---------- cursor (sin estado de React: todo directo al DOM) ---------- */
 export function Cursor() {
-  const dot = useRef<HTMLDivElement>(null);
-  const [label, setLabel] = useState<string | null>(null);
-  const [hover, setHover] = useState(false);
-  const [hidden, setHidden] = useState(true);
+  const root = useRef<HTMLDivElement>(null);
+  const label = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     if (TOUCH) return;
     document.documentElement.classList.add("has-cursor");
-    const el = dot.current!;
+    const el = root.current!;
     gsap.set(el, { xPercent: -50, yPercent: -50 });
     const xTo = gsap.quickTo(el, "x", { duration: 0.45, ease: "power3" });
     const yTo = gsap.quickTo(el, "y", { duration: 0.45, ease: "power3" });
+    let lastTarget: Element | null = null;
     const move = (e: MouseEvent) => {
-      xTo(e.clientX); yTo(e.clientY); setHidden(false);
-      const t = (e.target as HTMLElement).closest<HTMLElement>("[data-cursor], a, button");
-      setLabel(t?.dataset.cursor ?? null);
-      setHover(!!t);
+      xTo(e.clientX); yTo(e.clientY);
+      el.style.opacity = "1";
+      const tg = e.target;
+      if (tg === lastTarget || !(tg instanceof Element)) return;
+      lastTarget = tg;
+      const t = tg.closest<HTMLElement>("[data-cursor], a, button");
+      const txt = t?.dataset.cursor ?? "";
+      el.classList.toggle("is-hover", !!t && !txt);
+      el.classList.toggle("is-label", !!txt);
+      if (txt && label.current) label.current.textContent = txt;
     };
-    const out = () => setHidden(true);
-    window.addEventListener("mousemove", move);
+    // si el contenido bajo el mouse cambia (p. ej. texto "Copiado!"), se vuelve a leer al moverse
+    const reset = () => { lastTarget = null; };
+    const out = () => { el.style.opacity = "0"; };
+    window.addEventListener("mousemove", move, { passive: true });
+    window.addEventListener("click", reset);
+    window.addEventListener("wheel", reset, { passive: true });
     document.addEventListener("mouseleave", out);
-    return () => { window.removeEventListener("mousemove", move); document.removeEventListener("mouseleave", out); document.documentElement.classList.remove("has-cursor"); };
+    return () => {
+      window.removeEventListener("mousemove", move); window.removeEventListener("click", reset); window.removeEventListener("wheel", reset);
+      document.removeEventListener("mouseleave", out); document.documentElement.classList.remove("has-cursor");
+    };
   }, []);
   if (TOUCH) return null;
-  const size = label ? 96 : hover ? 56 : 12;
   return (
-    <div ref={dot} className="pointer-events-none fixed left-0 top-0 z-[100]" style={{ opacity: hidden ? 0 : 1, transition: "opacity .3s", mixBlendMode: label ? "normal" : "difference" }}>
-      <div
-        className={`flex items-center justify-center rounded-full ${label ? "bg-paper text-ink" : "bg-white"}`}
-        style={{ width: size, height: size, transition: "width .5s var(--ease-out-expo), height .5s var(--ease-out-expo), background-color .3s", boxShadow: label ? "0 0 0 1px #0a0a0a" : "none" }}
-      >
-        {label && <span className="label text-[10px]">{label}</span>}
-      </div>
+    <div ref={root} className="cur pointer-events-none fixed left-0 top-0 z-[100] mix-blend-difference" style={{ opacity: 0 }}>
+      <div className="cur-dot" />
+      <span ref={label} className="cur-label" />
     </div>
   );
+}
+
+/* ---------- reloj (componente propio para no re-renderizar secciones enteras) ---------- */
+export function VeniceClock({ className = "" }: { className?: string }) {
+  const t = useVeniceTime();
+  return <span className={className}>{t}</span>;
 }

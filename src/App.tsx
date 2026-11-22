@@ -30,7 +30,7 @@ export default function App() {
 
   return (
     <LangCtx.Provider value={{ lang, setLang }}>
-      <div className="grain">
+      <div>
         <Cursor />
         {loading && <Loader onReveal={() => { setReady(true); lockScroll(false); }} onDone={() => { setLoading(false); ScrollTrigger.refresh(); }} />}
         <LangWipe target={wipe} />
