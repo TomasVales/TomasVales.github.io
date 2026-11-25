@@ -29,7 +29,7 @@ export const UI = {
     es: "Soy Tomas, desarrollador argentino y estudiante de Computer Science en Ca' Foscari, Venecia. Me recibí de Técnico Superior en Programación en la UTN y desde entonces hice backends, herramientas de datos, apps de escritorio y juegos. Ahora busco un lugar donde trabajar, aprender y construir cosas reales.",
   },
   facts: [
-    { n: 49, en: "public repositories", it: "repository pubblici", es: "repositorios públicos" },
+    { n: 50, en: "public repositories", it: "repository pubblici", es: "repositorios públicos" },
     { n: 9, en: "programming languages", it: "linguaggi di programmazione", es: "lenguajes de programación" },
     { n: 6, en: "databases worked with", it: "database usati nei progetti", es: "bases de datos usadas en proyectos" },
   ],
@@ -243,6 +243,7 @@ export const PROJECTS: Project[] = [
 ];
 
 export const ARCHIVE: { year: string; title: string; type: L; stack: string; url?: string; wip?: boolean }[] = [
+  { year: "2026", title: "A64 Trainer", type: { en: "ARM64 exam trainer · Ca' Foscari", it: "Allenatore ARM64 · Ca' Foscari", es: "Entrenador de ARM64 · Ca' Foscari" }, stack: "JavaScript · ARM64 Assembly", url: gh("A64-Trainer") },
   { year: "2026", title: "Neysu", type: { en: "Social app for students", it: "Social per universitari", es: "Red social universitaria" }, stack: "React Native · Expo", wip: true },
   { year: "2026", title: "Math Steps", type: { en: "Offline math helper (PWA)", it: "Aiuto per la matematica (PWA)", es: "Ayuda de matemática (PWA)" }, stack: "TypeScript · React", url: gh("app-cop") },
   { year: "2026", title: "C99 Adventure", type: { en: "Text adventure · Ca' Foscari", it: "Avventura testuale · Ca' Foscari", es: "Aventura de texto · Ca' Foscari" }, stack: "C99", url: gh("C99---Ca-Foscari") },
